@@ -1,0 +1,8 @@
+{:deps   {:aliases [:cljs :dev]}
+ :builds {:web {:target           :browser
+                :output-dir       "public"
+                :asset-path       "."
+                :modules          {:app {:entries [hello.index]}}
+                :compiler-options {:output-feature-set :es8}
+                :devtools         {:after-load hello.index/start
+                                   :watch-dir  "public"}}}}

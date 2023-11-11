@@ -1,0 +1,43 @@
+{:paths ["bb"]
+ :tasks {instance-up   {:doc      "Start instance"
+                        :requires ([babashka.process :as p])
+                        :task     (let [inst-name (or (first *command-line-args*) "instance-1")]
+                                    (p/exec "gcloud compute instances start" inst-name))}
+         instance-down {:doc      "Stop instance"
+                        :requires ([babashka.process :as p])
+                        :task     (let [inst-name (or (first *command-line-args*) "instance-1")]
+                                    (p/exec "gcloud compute instances stop" inst-name))}
+         instance-stat {:doc      "Get instance-1 public IP"
+                        :requires ([tasks :as t])
+                        :task     (let [instance-name (or (first *command-line-args*)
+                                                          "instance-1")]
+                                    (-> (t/instance-status instance-name)
+                                        (println)))}
+         instance-ip   {:doc      "Get instance-1 public IP"
+                        :requires ([tasks :as t])
+                        :task     (let [instance-name (or (first *command-line-args*)
+                                                          "instance-1")]
+                                    (-> (t/instance-ip instance-name)
+                                        (println)))}
+         ssh           {:doc      "Open SSH terminal"
+                        :requires ([babashka.process :as p]
+                                   [tasks :as t])
+                        :task     (let [instance-name (or (first *command-line-args*)
+                                                          "instance-1")
+                                        user          (System/getenv "USER")
+                                        ip            (t/instance-ip instance-name)]
+                                    (p/exec "ssh -i ~/.ssh/remote-dev-test" (str user "@" ip)))}
+         tunnel        {:doc      "SSH tunnel port from instance-1 to local machine"
+                        :requires ([babashka.process :as p]
+                                   [tasks :as t])
+                        :task     (let [[instance-name lport rport] (if (re-matches (re-pattern "\\d+") (first *command-line-args*))
+                                                                      (cons "instance-1" *command-line-args*)
+                                                                      *command-line-args*)
+                                        lport                       (parse-long lport)
+                                        rport                       (parse-long rport)
+                                        user                        (System/getenv "USER")
+                                        ip                          (t/instance-ip instance-name)]
+                                    (println (format "Tunneling localhost:%d %s@%s:%d" lport user ip rport))
+                                    (-> (format "ssh -NT %s@%s -L %d:127.0.0.1:%d"
+                                                user ip lport rport)
+                                        (p/exec)))}}}

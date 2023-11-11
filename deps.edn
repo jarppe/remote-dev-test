@@ -1,0 +1,22 @@
+{:paths   ["src/clj" "resources"]
+ :deps    {org.clojure/clojure         {:mvn/version "1.11.1"}
+           integrant/integrant         {:mvn/version "0.8.1"}
+           metosin/ring-http-response  {:mvn/version "0.9.3"
+                                        :exclusions  [commons-fileupload/commons-fileupload]}
+           io.github.metosin/nima-ring {:git/tag "0.0.8"
+                                        :git/sha "968fb07"}
+
+           org.clojure/tools.logging   {:mvn/version "1.2.4"}
+           org.slf4j/slf4j-api         {:mvn/version "2.0.9"}
+           org.slf4j/slf4j-simple      {:mvn/version "2.0.9"}}
+
+ :aliases {:cljs {:extra-paths ["src/cljs"]
+                  :extra-deps  {org.clojure/clojurescript {:mvn/version "1.11.121"}
+                                funcool/promesa           {:mvn/version "11.0.678"}
+                                lilactown/helix           {:mvn/version "0.1.10"}}}
+
+           :dev  {:extra-paths ["src/dev"]
+                  :extra-deps  {org.clojure/tools.namespace {:mvn/version "1.4.4"}
+                                integrant/repl              {:mvn/version "0.3.3"}
+                                binaryage/devtools          {:mvn/version "1.0.7"}
+                                thheller/shadow-cljs        {:mvn/version "2.25.8"}}}}}
