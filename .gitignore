@@ -16,8 +16,6 @@
 !/src/**
 !/.cljfmt.edn
 !/.dockerignore
-!/.env
-!/.envrc
 !/.gcloudignore
 !/.gitignore
 !/bb.edn
